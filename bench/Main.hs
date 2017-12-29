@@ -12,4 +12,5 @@ main = defaultMain $ benchSuite
   [ RecordSpec "haskell" newHaskellRecord
   , RecordSpec "vynil" newVinylRecord
   , RecordSpec "composite" newCompositeRecord
+  , RecordSpec "diverse-many" newDMRecord
   ]

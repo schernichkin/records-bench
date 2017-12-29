@@ -8,6 +8,8 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeSynonymInstances  #-}
 
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module Records.Bench.Diverse.Many where
 
 import           Data.Diverse.Many
@@ -62,10 +64,50 @@ instance Accessible DMRecord where
   {-# INLINE last #-}
   last = get @"a8" Proxy
 
---  {-# INLINE all #-}
---  all x = ( get a1 x, get a2 x, get a3 x, get a4 x
---          , get a5 x, get a6 x, get a7 x, get a8 x
---          )
+  {-# INLINE all #-}
+  all x = ( get @"a1" Proxy x, get @"a2" Proxy x, get @"a3" Proxy x, get @"a4" Proxy x
+          , get @"a5" Proxy x, get @"a6" Proxy x, get @"a7" Proxy x, get @"a8" Proxy x
+          )
+
+instance Accessible DMRecordA where
+  type Tuple DMRecordA = Tuple9
+
+  {-# INLINE first #-}
+  first = get @"a1" Proxy
+
+  {-# INLINE last #-}
+  last = get @"a9" Proxy
+
+  {-# INLINE all #-}
+  all x = ( get @"a1" Proxy x, get @"a2" Proxy x, get @"a3" Proxy x, get @"a4" Proxy x
+          , get @"a5" Proxy x, get @"a6" Proxy x, get @"a7" Proxy x, get @"a8" Proxy x
+          , get @"a8" Proxy x
+          )
+
+instance Accessible DMRecordP where
+  type Tuple DMRecordP = Tuple9
+
+  {-# INLINE first #-}
+  first = get @"a0" Proxy
+
+  {-# INLINE last #-}
+  last = get @"a8" Proxy
+
+  {-# INLINE all #-}
+  all x = ( get @"a0" Proxy x
+          , get @"a1" Proxy x, get @"a2" Proxy x, get @"a3" Proxy x, get @"a4" Proxy x
+          , get @"a5" Proxy x, get @"a6" Proxy x, get @"a7" Proxy x, get @"a8" Proxy x
+          )
+
+instance Extendable DMRecord where
+  type Prepended DMRecord = DMRecordP
+  type Appended DMRecord = DMRecordA
+
+  {-# INLINE prepend #-}
+  prepend x xs = Tagged x ./ xs
+
+  {-# INLINE append #-}
+  append x xs = xs \. Tagged x
 
 newDMRecord :: DMRecord
 newDMRecord = Tagged 0 ./ Tagged 0 ./ Tagged 0 ./ Tagged 0 ./
